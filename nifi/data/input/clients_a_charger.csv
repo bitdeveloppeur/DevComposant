@@ -1,0 +1,17 @@
+id,nom,prenom,email,telephone,ville,pays,statut
+21,Fall,Aissatou,aissatou.fall@example.com,+221 77 717 17 17,Dakar,Sénégal,ACTIF
+22,Ba,Modou,modou.ba@example.com,+221 78 818 18 18,Mbour,Sénégal,ACTIF
+23,Sarr,Ndeye Fatou,ndeye.sarr@example.com,+221 76 919 19 19,Thiès,Sénégal,INACTIF
+24,Gueye,Ibrahima,ibrahima.gueye@example.com,+221 77 121 21 21,Dakar,Sénégal,ACTIF
+25,Konate,Adama,adama.konate@example.com,+223 76 222 22 22,Ségou,Mali,ACTIF
+26,Sangare,Kadiatou,kadiatou.sangare@example.com,+223 66 323 23 23,Bamako,Mali,INACTIF
+27,Yao,Kouadio,kouadio.yao@example.com,+225 05 424 24 24,Yamoussoukro,Côte d'Ivoire,ACTIF
+28,Toure,Sekou,sekou.toure@example.com,+225 07 525 25 25,Abidjan,Côte d'Ivoire,ACTIF
+29,Alaoui,Meryem,meryem.alaoui@example.com,+212 66 626 26 26,Fès,Maroc,ACTIF
+30,Chakir,Nadia,nadia.chakir@example.com,+212 66 727 27 27,Marrakech,Maroc,INACTIF
+31,Petit,Anne,anne.petit@example.com,+33 6 56 78 90 12,Nantes,France,ACTIF
+32,Durand,Paul,paul.durand@example.com,+33 6 67 89 01 23,Bordeaux,France,ACTIF
+33,Ndiaye,Samba,samba.ndiaye#example.com,+221 77 828 28 28,Dakar,Sénégal,ACTIF
+34,,Magatte,magatte.diop@example.com,+221 76 929 29 29,Dakar,Sénégal,ACTIF
+35,Diop,Awa,awa.diop@example.com,+221 77 130 30 30,Dakar,Sénégal,SUSPENDU
+36,Sene,,aliou.sene@example.com,+221 78 131 31 31,Touba,Sénégal,ACTIF

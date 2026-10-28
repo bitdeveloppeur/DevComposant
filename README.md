@@ -49,7 +49,7 @@ DevComposant/
 │       ├── service/               # Logique métier + validation
 │       ├── ws/                    # Contrat SOAP (SEI), implémentation, Faults
 │       └── exception/             # Exceptions métier
-├── nifi/                          # Template du flux NiFi
+├── nifi/                          # Flux NiFi : doc etapes + données d'entrée/sortie
 ├── prometheus/                    # Configuration Prometheus
 ├── grafana/                       # Provisioning + tableau de bord
 ├── soapui/                        # Projet SoapUI (tests)
@@ -68,23 +68,32 @@ DevComposant/
 ## Installation
 
 ```bash
-# 🚧 Procédure complète fournie avec la partie Docker Compose.
-# Aperçu :
-docker compose up -d          # démarre MySQL, Prometheus et Grafana
+# 1. Base de données (création du schéma + jeu de données fictives)
+mysql -u root -p < db/01_schema.sql
+mysql -u root -p < db/02_donnees_test.sql
+
+# 2. Environnement complet ( fourni à la partie Docker Compose)
+docker compose up -d          # démarrera MySQL, Prometheus et Grafana
+
+# 3. Service SOAP
 cd soap-clients-service
-./mvnw spring-boot:run        # démarre le service SOAP
+./mvnw spring-boot:run        # démarre le service (WSDL à la partie 3)
 ```
+
+Le flux ETL NiFi (extraction → validation → chargement) est documenté pas à pas dans
+[`nifi/README-flux-nifi.md`](nifi/README-flux-nifi.md) — installation de NiFi :
+[`docs/installation-nifi.md`](docs/installation-nifi.md).
 
 ## Utilisation
 
-- WSDL : `http://localhost:8080/services/clients?wsdl` (🚧 publié à la partie 3)
+- WSDL : `http://localhost:8080/services/clients?wsdl` (publié à la partie 3)
 - Santé : `http://localhost:8080/actuator/health`
 - Métriques : `http://localhost:8080/actuator/prometheus`
 
 ## Suivi d'avancement
 
 - [x] **Partie 1** — Squelette Maven, configuration Spring Boot + CXF, architecture
-- [ ] **Partie 2** — Base de données : scripts SQL + jeu de données + flux NiFi
+- [x] **Partie 2** — Base de données : scripts SQL + jeu de données + flux NiFi
 - [ ] **Partie 3** — Service SOAP : `getClientDetails`, `searchClients`, `updateClient`, Faults
 - [ ] **Partie 4** — Docker Compose : MySQL, Prometheus, Grafana (installation reproductible)
 - [ ] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP
