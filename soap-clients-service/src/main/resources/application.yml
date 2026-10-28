@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: soap-clients-service
+
+  datasource:
+    # Paramètres surchargeables par variables d'environnement (12-factor) :
+    # la même image/application fonctionne en local, dans Docker ou en production.
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:clientsdb}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:soapapp}
+    password: ${DB_PASSWORD:soappass}
+    hikari:
+      # Dimensionnement du pool : suffisant pour la charge cible sans épuiser
+      # les connexions MySQL (max_connections par défaut = 151).
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      # Le schéma est géré par les scripts SQL versionnés (src/main/resources/sql),
+      # jamais par Hibernate : validate refuse de démarrer si l'écart est détecté.
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: false
+
+server:
+  port: 8080
+  error:
+    # Sécurité : jamais de stack trace dans les réponses d'erreur HTTP.
+    include-stacktrace: never
+
+# Endpoint racinal du servlet CXF : le service sera publié sous /services/clients.
+cxf:
+  path: /services
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Surface minimale : santé, infos et métriques Prometheus.
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
