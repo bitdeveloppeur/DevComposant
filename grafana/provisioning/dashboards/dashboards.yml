@@ -1,0 +1,17 @@
+# Fournisseur de tableaux de bord : tout fichier JSON déposé dans
+# grafana/dashboards/ (monté dans le conteneur) est chargé automatiquement
+# et rechargé toutes les 10 s — modifiable ensuite depuis l'interface.
+apiVersion: 1
+
+providers:
+  - name: exo2-default
+    orgId: 1
+    folder: ""
+    folderUid: ""
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/dashboards
+      foldersFromFilesStructure: false

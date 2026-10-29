@@ -48,3 +48,9 @@ management:
     health:
       probes:
         enabled: true
+  metrics:
+    distribution:
+      # Publie les buckets de latence (http_server_requests_seconds_bucket)
+      # → le quantile p95 est calculé côté Prometheus (histogram_quantile).
+      percentiles-histogram:
+        http.server.requests: true
