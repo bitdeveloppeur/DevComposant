@@ -65,24 +65,46 @@ DevComposant/
 - **Docker + Docker Compose** (MySQL, Prometheus, Grafana)
 - **Apache NiFi** (installation dédiée, procédure dans `docs/`) et **SoapUI** pour les tests
 
-## Installation
+## Installation (machine neuve : une seule commande)
 
 ```bash
-# 1. Base de données (création du schéma + jeu de données fictives)
-mysql -u root -p < db/01_schema.sql
-mysql -u root -p < db/02_donnees_test.sql
+git clone <url-du-depot> && cd DevComposant
+docker compose up -d --build
+```
 
-# 2. Environnement complet ( fourni à la partie Docker Compose)
-docker compose up -d          # démarrera MySQL, Prometheus et Grafana
+Au premier démarrage, MySQL exécute automatiquement `db/01_schema.sql` (schéma,
+compte applicatif) et `db/02_donnees_test.sql` (20 clients fictifs), puis le
+service SOAP démarre une fois la base saine. C'est tout.
 
-# 3. Service SOAP
-cd soap-clients-service
-./mvnw spring-boot:run        # démarre le service (WSDL à la partie 3)
+| Service | URL | Identifiants |
+|---|---|---|
+| Service SOAP (WSDL) | http://localhost:8080/services/clients?wsdl | — |
+| Santé / métriques | http://localhost:8080/actuator/health · /actuator/prometheus | — |
+| Prometheus | http://localhost:9090 (Status → Targets) | — |
+| Grafana | http://localhost:3001 (le port 3000 était occupé sur la machine de développement) | admin / admin |
+| MySQL | localhost:3306 — base `clientsdb` | soapapp / soappass (root : rootpass) |
+
+Commandes utiles :
+
+```bash
+docker compose ps        # état + healthchecks
+docker compose logs -f app   # journaux du service
+docker compose down      # arrêt (données conservées dans les volumes)
+docker compose down -v   # arrêt + remise à zéro (les scripts réinitialisent tout)
+```
+
+Mode développeur (service hors Docker, infra dans Docker) :
+
+```bash
+docker compose up -d mysql prometheus grafana   # sans l'app
+cd soap-clients-service && ./mvnw spring-boot:run
+# NB : dans prometheus/prometheus.yml, cibler host.docker.internal:8080 au lieu de app:8080
 ```
 
 Le flux ETL NiFi (extraction → validation → chargement) est documenté pas à pas dans
 [`nifi/README-flux-nifi.md`](nifi/README-flux-nifi.md) — installation de NiFi :
-[`docs/installation-nifi.md`](docs/installation-nifi.md).
+[`docs/installation-nifi.md`](docs/installation-nifi.md) (il accède à MySQL via
+`localhost:3306`, port publié par le compose).
 
 ## Utilisation
 
@@ -97,7 +119,7 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 - [x] **Partie 1** — Squelette Maven, configuration Spring Boot + CXF, architecture
 - [x] **Partie 2** — Base de données : scripts SQL + jeu de données + flux NiFi
 - [x] **Partie 3** — Service SOAP : `getClientDetails`, `searchClients`, `updateClient`, Faults
-- [ ] **Partie 4** — Docker Compose : MySQL, Prometheus, Grafana (installation reproductible)
+- [x] **Partie 4** — Docker Compose : MySQL, service, Prometheus, Grafana (installation reproductible)
 - [ ] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP
 - [ ] **Partie 6** — Métriques + tableau de bord Grafana
 - [ ] **Partie 7** — Tests SoapUI (nominaux + erreurs) et scénario bout en bout

@@ -1,0 +1,9 @@
+# Le build s'exécute dans l'image Maven officielle : seuls pom.xml et src/ sont utiles.
+target/
+.idea/
+.vscode/
+*.iml
+.mvn/
+mvnw
+mvnw.cmd
+logs/

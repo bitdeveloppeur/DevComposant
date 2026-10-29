@@ -1,0 +1,20 @@
+# =====================================================================
+# Collecte des métriques du service SOAP (Exercice 2 — partie 6)
+# Interface Prometheus : http://localhost:9090  (menu Status → Targets)
+# =====================================================================
+
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: soap-clients-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      # Service conteneurisé dans le même réseau Docker Compose.
+      - targets: ["app:8080"]
+        labels:
+          service: soap-clients
+#       # Variante : si le service est lancé sur la machine hôte
+#       # (./mvnw spring-boot:run) au lieu du conteneur, remplacer la cible par :
+#       #   targets: ["host.docker.internal:8080"]
