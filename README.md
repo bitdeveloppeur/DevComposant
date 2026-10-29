@@ -109,6 +109,7 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 ## Utilisation
 
 - **WSDL du service** : `http://localhost:8080/services/clients?wsdl` (copie archivée : `docs/ClientService.wsdl`)
+- **Contrat complet documenté** : [`docs/contrat-ws.md`](docs/contrat-ws.md) — paramètres, structures de réponse, règles de validation, erreurs SOAP (Fault), lecture du WSDL
 - Opérations : `getClientDetails`, `searchClients` (nom / ville / statut + pagination), `updateClient` (mise à jour partielle)
 - Santé : `http://localhost:8080/actuator/health`
 - Métriques : `http://localhost:8080/actuator/prometheus`
@@ -120,6 +121,6 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 - [x] **Partie 2** — Base de données : scripts SQL + jeu de données + flux NiFi
 - [x] **Partie 3** — Service SOAP : `getClientDetails`, `searchClients`, `updateClient`, Faults
 - [x] **Partie 4** — Docker Compose : MySQL, service, Prometheus, Grafana (installation reproductible)
-- [ ] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP
+- [x] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP : [`docs/contrat-ws.md`](docs/contrat-ws.md)
 - [ ] **Partie 6** — Métriques + tableau de bord Grafana
 - [ ] **Partie 7** — Tests SoapUI (nominaux + erreurs) et scénario bout en bout
