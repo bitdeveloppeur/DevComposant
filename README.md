@@ -111,6 +111,7 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 - **WSDL du service** : `http://localhost:8080/services/clients?wsdl` (copie archivée : `docs/ClientService.wsdl`)
 - **Contrat complet documenté** : [`docs/contrat-ws.md`](docs/contrat-ws.md) — paramètres, structures de réponse, règles de validation, erreurs SOAP (Fault), lecture du WSDL
 - Opérations : `getClientDetails`, `searchClients` (nom / ville / statut + pagination), `updateClient` (mise à jour partielle)
+- **Tableau de bord Grafana** : `http://localhost:3001/d/soap-clients` — provisionné automatiquement (santé, clients en base, appels/s par opération, taux de Faults, latence p95, statuts HTTP, JVM)
 - Santé : `http://localhost:8080/actuator/health`
 - Métriques : `http://localhost:8080/actuator/prometheus`
 - Scénarios de test exécutés avec succès : [`docs/tests-live-partie3.md`](docs/tests-live-partie3.md)
@@ -122,5 +123,5 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 - [x] **Partie 3** — Service SOAP : `getClientDetails`, `searchClients`, `updateClient`, Faults
 - [x] **Partie 4** — Docker Compose : MySQL, service, Prometheus, Grafana (installation reproductible)
 - [x] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP : [`docs/contrat-ws.md`](docs/contrat-ws.md)
-- [ ] **Partie 6** — Métriques + tableau de bord Grafana
+- [x] **Partie 6** — Métriques métier (`soap_requests_total`, `clients_in_db`) + tableau de bord Grafana provisionné (`grafana/dashboards/soap-clients.json`)
 - [ ] **Partie 7** — Tests SoapUI (nominaux + erreurs) et scénario bout en bout

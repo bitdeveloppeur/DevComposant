@@ -2,6 +2,7 @@ package com.ibam.soapclients;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Point d'entrée du service SOAP de gestion des clients (Exercice 2).
@@ -17,6 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * </ul>
  */
 @SpringBootApplication
+@EnableScheduling
 public class SoapClientsApplication {
 
     public static void main(String[] args) {

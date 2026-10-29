@@ -71,8 +71,9 @@ services:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
     volumes:
-      # Provisioning automatique : source de données Prometheus (et tableau de bord, partie 6).
+      # Provisioning automatique : source de données Prometheus + tableau de bord.
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
       - donnees-grafana:/var/lib/grafana
     # NB : le port 3000 de la machine hôte étant occupé, Grafana est publié sur 3001.
     ports:
