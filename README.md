@@ -84,6 +84,10 @@ service SOAP démarre une fois la base saine. C'est tout.
 | Grafana | http://localhost:3001 (le port 3000 était occupé sur la machine de développement) | admin / admin |
 | MySQL | localhost:3306 — base `clientsdb` | soapapp / soappass (root : rootpass) |
 
+Tous ces identifiants sont des **valeurs par défaut** surchargeables : copier
+[`.env.example`](.env.example) en `.env` (ignoré par Git), ajuster, puis
+`docker compose up -d --force-recreate`.
+
 Commandes utiles :
 
 ```bash
@@ -118,12 +122,43 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 - **Projet SoapUI** (2 suites, 7 cas, assertions) : [`soapui/`](soapui/README-soapui.md) — importer `exo2-clients-soapui-project.xml`
 - **Scénario bout en bout** (NiFi → MySQL → SOAP → Grafana) : [`docs/scenario-bout-en-bout.md`](docs/scenario-bout-en-bout.md)
 
-## Suivi d'avancement
+## Comment tester
 
-- [x] **Partie 1** — Squelette Maven, configuration Spring Boot + CXF, architecture
-- [x] **Partie 2** — Base de données : scripts SQL + jeu de données + flux NiFi
-- [x] **Partie 3** — Service SOAP : `getClientDetails`, `searchClients`, `updateClient`, Faults
-- [x] **Partie 4** — Docker Compose : MySQL, service, Prometheus, Grafana (installation reproductible)
-- [x] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP : [`docs/contrat-ws.md`](docs/contrat-ws.md)
-- [x] **Partie 6** — Métriques métier (`soap_requests_total`, `clients_in_db`) + tableau de bord Grafana provisionné (`grafana/dashboards/soap-clients.json`)
-- [x] **Partie 7** — Tests SoapUI (nominaux + erreurs, 7 cas avec assertions) + scénario bout en bout documenté
+### 1. Tests unitaires (sans base de données)
+
+```bash
+cd soap-clients-service
+./mvnw test          # 15 tests JUnit 5 + Mockito — doit finir BUILD SUCCESS
+```
+
+### 2. Vérification rapide du service en marche
+
+```bash
+curl http://localhost:8080/actuator/health                 # {"status":"UP"}
+curl http://localhost:8080/services/clients?wsdl | head    # le WSDL est publié
+
+# Appel SOAP réel (cas nominal) puis cas d'erreur (Fault) :
+curl -s -X POST http://localhost:8080/services/clients \
+  -H "Content-Type: text/xml; charset=utf-8" \
+  --data '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.soapclients.ibam.com/"><soapenv:Body><ws:getClientDetailsRequest><id>1</id></ws:getClientDetailsRequest></soapenv:Body></soapenv:Envelope>'
+# → réponse avec la fiche du client 1 (remplacer id par 999 → Fault CLIENT_INTROUVABLE)
+```
+
+Les 7 enveloppes (nominaux + erreurs) sont prêtes à copier dans [`docs/tests-live-partie3.md`](docs/tests-live-partie3.md).
+
+### 3. Tests SoapUI 
+
+1. Service démarré (ci-dessus) puis ouvrir SoapUI ;
+2. **File → Import Project** → `soapui/exo2-clients-soapui-project.xml` ;
+3. Lancer chaque suite (bouton vert) : **Cas nominaux** (3 cas) et **Cas d'erreurs (Faults)** (4 cas) — tout doit être vert.
+
+Détail et procédure de secours : [`soapui/README-soapui.md`](soapui/README-soapui.md).
+
+### 4. Test de bout en bout (chaîne complète, exigé par le sujet)
+
+Script pas-à-pas avec résultats attendus : [`docs/scenario-bout-en-bout.md`](docs/scenario-bout-en-bout.md) —
+résumé : `docker compose down -v && docker compose up -d` (base réinitialisée à 20 clients) →
+lot NiFi (12 chargées / 4 rejetées → 32 clients, visible dans Grafana) → suites SoapUI →
+courbes du dashboard Grafana en direct.
+
+
