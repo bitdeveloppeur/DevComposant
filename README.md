@@ -115,6 +115,8 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 - Santé : `http://localhost:8080/actuator/health`
 - Métriques : `http://localhost:8080/actuator/prometheus`
 - Scénarios de test exécutés avec succès : [`docs/tests-live-partie3.md`](docs/tests-live-partie3.md)
+- **Projet SoapUI** (2 suites, 7 cas, assertions) : [`soapui/`](soapui/README-soapui.md) — importer `exo2-clients-soapui-project.xml`
+- **Scénario bout en bout** (NiFi → MySQL → SOAP → Grafana) : [`docs/scenario-bout-en-bout.md`](docs/scenario-bout-en-bout.md)
 
 ## Suivi d'avancement
 
@@ -124,4 +126,4 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 - [x] **Partie 4** — Docker Compose : MySQL, service, Prometheus, Grafana (installation reproductible)
 - [x] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP : [`docs/contrat-ws.md`](docs/contrat-ws.md)
 - [x] **Partie 6** — Métriques métier (`soap_requests_total`, `clients_in_db`) + tableau de bord Grafana provisionné (`grafana/dashboards/soap-clients.json`)
-- [ ] **Partie 7** — Tests SoapUI (nominaux + erreurs) et scénario bout en bout
+- [x] **Partie 7** — Tests SoapUI (nominaux + erreurs, 7 cas avec assertions) + scénario bout en bout documenté
