@@ -86,15 +86,17 @@ Le flux ETL NiFi (extraction → validation → chargement) est documenté pas �
 
 ## Utilisation
 
-- WSDL : `http://localhost:8080/services/clients?wsdl` (publié à la partie 3)
+- **WSDL du service** : `http://localhost:8080/services/clients?wsdl` (copie archivée : `docs/ClientService.wsdl`)
+- Opérations : `getClientDetails`, `searchClients` (nom / ville / statut + pagination), `updateClient` (mise à jour partielle)
 - Santé : `http://localhost:8080/actuator/health`
 - Métriques : `http://localhost:8080/actuator/prometheus`
+- Scénarios de test exécutés avec succès : [`docs/tests-live-partie3.md`](docs/tests-live-partie3.md)
 
 ## Suivi d'avancement
 
 - [x] **Partie 1** — Squelette Maven, configuration Spring Boot + CXF, architecture
 - [x] **Partie 2** — Base de données : scripts SQL + jeu de données + flux NiFi
-- [ ] **Partie 3** — Service SOAP : `getClientDetails`, `searchClients`, `updateClient`, Faults
+- [x] **Partie 3** — Service SOAP : `getClientDetails`, `searchClients`, `updateClient`, Faults
 - [ ] **Partie 4** — Docker Compose : MySQL, Prometheus, Grafana (installation reproductible)
 - [ ] **Partie 5** — Documentation WSDL, contrats, règles de validation, erreurs SOAP
 - [ ] **Partie 6** — Métriques + tableau de bord Grafana

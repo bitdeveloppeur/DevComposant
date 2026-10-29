@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS clients (
   ville              VARCHAR(80)   NULL,
   pays               VARCHAR(80)   NULL,
   statut             VARCHAR(10)   NOT NULL DEFAULT 'ACTIF',
-  date_creation      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  date_modification  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
-                                   ON UPDATE CURRENT_TIMESTAMP,
+  date_creation      TIMESTAMP(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  date_modification  TIMESTAMP(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+                                   ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (id),
   -- Unicité métier : un client = une adresse e-mail.
   UNIQUE KEY uq_clients_email (email),
