@@ -1,0 +1,86 @@
+# =====================================================================
+# Exercice 2 — Environnement complet reproductible
+#   docker compose up -d --build     → MySQL + service SOAP + Prometheus + Grafana
+#   docker compose down              → arrêt (données conservées)
+#   docker compose down -v           → arrêt + remise à zéro des bases
+#
+# NiFi conserve une installation dédiée (docs/installation-nifi.md) ;
+# il accède à MySQL via localhost:3306 (port publié) ou en rejoignant
+# le réseau Docker : docker network connect devcomposant_default <nifi>
+# =====================================================================
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: clients-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: clientsdb
+      MYSQL_USER: soapapp
+      MYSQL_PASSWORD: ${DB_PASSWORD:-soappass}
+    ports:
+      - "3306:3306"
+    volumes:
+      # Schéma + jeu de données exécutés automatiquement au premier démarrage.
+      - ./db:/docker-entrypoint-initdb.d:ro
+      - donnees-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  app:
+    build: ./soap-clients-service
+    container_name: clients-soap
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: clientsdb
+      DB_USER: soapapp
+      DB_PASSWORD: ${DB_PASSWORD:-soappass}
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: clients-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: clients-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      # Provisioning automatique : source de données Prometheus (et tableau de bord, partie 6).
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - donnees-grafana:/var/lib/grafana
+    # NB : le port 3000 de la machine hôte étant occupé, Grafana est publié sur 3001.
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  donnees-mysql:
+  donnees-grafana:
